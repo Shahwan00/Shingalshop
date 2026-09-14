@@ -3,316 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سوق شنكال - Vinted Shingal</title>
-    <!-- نظام التشغيل كـ تطبيق هاتف PWA -->
-    <meta name="theme-color" content="#008080">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1170/1170576.png">
-
+    <title>سوق شنكال - Shingal Market</title>
+    <!-- FontAwesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --primary: #008080;
-            --primary-dark: #005959;
-            --bg: #f4f7f6;
-            --text: #1a202c;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
-
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 20px 15px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        header h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
-        header p { font-size: 0.85rem; opacity: 0.9; margin-top: 4px; }
-
-        /* Container */
-        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
-
-        /* Floating Add Button / Modal Trigger */
-        .fab-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 1rem;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,128,128,0.4);
-            cursor: pointer;
-            z-index: 99;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            --primary: #FF5A5F;
+            --primary-dark: #e0484d;
+            --bg: #F7F8FA;
+            --card-bg: #FFFFFF;
+            --text-dark: #1A1D1E;
+            --text-gray: #8A8D91;
+            --border-color: #EEEEEE;
         }
 
-        /* Form Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            width: 100%;
-            max-width: 480px;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease-out;
-        }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text-dark); padding-bottom: 80px; }
 
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #888; }
+        /* Screens Management */
+        .screen { display: none; }
+        .screen.active { display: block; }
 
-        /* Form Elements */
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #4a5568; }
-        input[type="text"], input[type="number"], input[type="tel"], textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            outline: none;
-            background: #f8fafc;
-        }
-        input:focus, textarea:focus { border-color: var(--primary); background: white; }
+        /* ================= AUTH SCREEN ================= */
+        .auth-container { max-width: 400px; margin: 0 auto; padding: 30px 20px; background: #fff; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        .auth-header h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; }
+        .auth-header p { font-size: 0.9rem; color: var(--text-gray); margin-bottom: 25px; }
+        .auth-header span { color: var(--primary); font-weight: bold; cursor: pointer; }
+
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-group i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray); }
+        .input-group input { width: 100%; padding: 14px 45px 14px 15px; border: 1px solid #E2E8F0; border-radius: 12px; background: #F8FAFC; font-size: 0.95rem; outline: none; }
+        .input-group input:focus { border-color: var(--text-dark); background: #fff; }
+
+        .btn-black { width: 100%; background: var(--text-dark); color: #fff; border: none; padding: 15px; border-radius: 25px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
         
-        .price-input-wrapper { position: relative; }
-        .price-currency { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-weight: bold; color: #718096; font-size: 0.85rem; }
+        .divider { display: flex; align-items: center; text-align: center; color: var(--text-gray); font-size: 0.8rem; margin: 25px 0; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #E2E8F0; }
+        .divider span { padding: 0 10px; }
 
-        .submit-btn {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+        .social-btns { display: flex; flex-direction: column; gap: 10px; }
+        .social-btn { display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid #E2E8F0; padding: 12px; border-radius: 25px; font-size: 0.9rem; font-weight: 600; background: #fff; cursor: pointer; }
+        .social-icons-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
+        .social-icon-circle { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
 
-        /* Feed & Cards */
-        .feed-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; color: #2d3748; }
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        @media(min-width: 480px) { .products-grid { grid-template-columns: repeat( auto-fill, minmax(170px, 1fr) ); } }
+        /* ================= MAIN SCREEN ================= */
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--bg); position: sticky; top: 0; z-index: 90; }
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #ddd; object-fit: cover; }
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #edf2f7;
-        }
-        .card-img-wrapper { position: relative; width: 100%; padding-top: 100%; background: #edf2f7; }
-        .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .card-body { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
-        .card-title { font-size: 0.9rem; font-weight: 700; color: #2d3748; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-location { font-size: 0.75rem; color: #718096; margin-top: 2px; }
-        .card-price { font-size: 1rem; font-weight: 800; color: var(--primary); margin: 6px 0; }
-        
-        .wa-link {
-            background: #25D366;
-            color: white;
-            text-decoration: none;
-            text-align: center;
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: block;
-        }
+        .search-bar-row { display: flex; gap: 10px; padding: 0 20px 15px 20px; }
+        .search-input { flex: 1; position: relative; }
+        .search-input input { width: 100%; padding: 12px 40px 12px 15px; border-radius: 12px; border: none; background: #fff; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .search-input i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-gray); }
+        .filter-btn { background: var(--primary); color: #fff; border: none; width: 45px; border-radius: 12px; font-size: 1.1rem; cursor: pointer; }
 
-        .loading-text { text-align: center; color: #a0aec0; grid-column: 1/-1; padding: 40px 0; }
+        /* Banner */
+        .banner { margin: 0 20px 20px 20px; background: linear-gradient(135deg, #6C5CE7, #a29bfe); border-radius: 20px; padding: 20px; color: #fff; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+        .banner-text h3 { font-size: 1.4rem; font-weight: 800; }
+        .banner-text p { font-size: 0.8rem; opacity: 0.9; margin-top: 4px; }
+
+        /* Categories */
+        .categories { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scrollbar-width: none; }
+        .category-chip { background: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .category-chip.active { background: var(--text-dark); color: #fff; border-color: var(--text-dark); }
+
+        /* Products Grid */
+        .products-section { padding: 0 20px; }
+        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+
+        .product-card { background: #fff; border-radius: 16px; overflow: hidden; padding: 10px; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .product-card .fav-btn { position: absolute; top: 18px; left: 18px; background: rgba(255,255,255,0.8); border: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; }
+        .product-img-box { width: 100%; height: 140px; border-radius: 12px; overflow: hidden; background: #f0f0f0; margin-bottom: 10px; position: relative; }
+        .product-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .img-count-badge { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.6); color: #fff; padding: 2px 6px; border-radius: 8px; font-size: 0.65rem; }
+
+        .product-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-price { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
+        .product-location { font-size: 0.75rem; color: var(--text-gray); margin-top: 2px; }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: #fff; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-gray); font-size: 1.2rem; cursor: pointer; text-decoration: none; }
+        .nav-item.active { color: var(--primary); }
+        .add-nav-btn { background: var(--primary); color: #fff; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(255,90,95,0.4); margin-top: -20px; }
+
+        /* Modal For Selling */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: flex-end; }
+        .modal.active { display: flex; }
+        .modal-body { background: #fff; width: 100%; border-radius: 25px 25px 0 0; padding: 20px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .image-preview-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
+        .img-preview-box { width: 100%; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>سوق شنكال المستعمل</h1>
-    <p>بيع واشترِ داخل شنكال بسهولة وبدون عمولة</p>
-</header>
+<!-- 1. شاشة تسجيل الدخول -->
+<div id="authScreen" class="screen active">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2 id="authTitle">Sign in</h2>
+            <p>New user? <span onclick="toggleAuthMode()">Create an account</span></p>
+        </div>
 
-<div class="container">
-    <div class="feed-title">أحدث الأغراض المعروضة</div>
-    <div class="products-grid" id="productsFeed">
-        <div class="loading-text">جاري تحميل المنتجات...</div>
+        <form id="authForm" onsubmit="handleAuth(event)">
+            <div class="input-group">
+                <i class="fa-regular fa-envelope"></i>
+                <input type="email" placeholder="Email Address" required>
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn-black">Login</button>
+        </form>
+
+        <div class="divider"><span>or</span></div>
+
+        <p style="text-align: center; font-size: 0.8rem; color: var(--text-gray); margin-bottom: 15px;">Join With Your Favourite Social Media Account</p>
+        
+        <div class="social-icons-row">
+            <div class="social-icon-circle" onclick="bypassAuth()"><i class="fa-brands fa-google" style="color:#DB4437"></i></div>
+            <div class="social-icon-circle" onclick="bypassAuth()"><i class="fa-brands fa-facebook-f" style="color:#4267B2"></i></div>
+            <div class="social-icon-circle" onclick="bypassAuth()"><i class="fa-brands fa-x-twitter"></i></div>
+            <div class="social-icon-circle" onclick="bypassAuth()"><i class="fa-brands fa-apple"></i></div>
+        </div>
     </div>
 </div>
 
-<!-- زر إضافة إعلان -->
-<button class="fab-btn" onclick="openModal()">
-    <span>➕</span> اعرض غرض للبيع
-</button>
-
-<!-- النافذة المنبثقة للبيع -->
-<div class="modal" id="addModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>إضافة غرض جديد</h3>
-            <button class="close-btn" onclick="closeModal()">&times;</button>
+<!-- 2. الواجهة الرئيسية للتطبيق -->
+<div id="mainScreen" class="screen">
+    <!-- Header -->
+    <div class="app-header">
+        <i class="fa-solid fa-bars" style="font-size: 1.2rem;"></i>
+        <h3 style="font-size: 1.1rem; font-weight: 800;">سوق شنكال</h3>
+        <div class="user-profile">
+            <img src="https://ui-avatars.com/api/?name=User&background=FF5A5F&color=fff" class="avatar" alt="profile">
         </div>
-        <form id="productForm">
-            <div class="form-group">
-                <label>اسم المنتج</label>
-                <input type="text" id="pTitle" placeholder="مثال: موبايل سامسونج، دباب..." required>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar-row">
+        <div class="search-input">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="ابحث عن منتج، ملابس، سيارات..." onkeyup="filterProducts()">
+        </div>
+        <button class="filter-btn"><i class="fa-sliders fa-solid"></i></button>
+    </div>
+
+    <!-- Banner -->
+    <div class="banner">
+        <div class="banner-text">
+            <h3>تخفيضات 50%</h3>
+            <p>أفضل العروض والمنتجات المستعملة في شنكال</p>
+        </div>
+        <i class="fa-solid fa-bag-shopping" style="font-size: 3.5rem; opacity: 0.3;"></i>
+    </div>
+
+    <!-- Categories -->
+    <div class="categories">
+        <div class="category-chip active"><i class="fa-solid fa-border-all"></i> الكل</div>
+        <div class="category-chip"><i class="fa-solid fa-shoe-prints"></i> أحذية</div>
+        <div class="category-chip"><i class="fa-solid fa-clock"></i> ساعات</div>
+        <div class="category-chip"><i class="fa-solid fa-mobile-screen"></i> هواتف</div>
+        <div class="category-chip"><i class="fa-solid fa-shirt"></i> ملابس</div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="products-section">
+        <div class="section-title">
+            <span>الأحدث في شنكال</span>
+            <span style="font-size: 0.8rem; color: var(--primary); cursor: pointer;">عرض الكل</span>
+        </div>
+        <div class="products-grid" id="productsFeed">
+            <!-- المنتجات تتولد هنا عبر JS -->
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <div class="nav-item active"><i class="fa-solid fa-house"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-heart"></i></div>
+        <div class="add-nav-btn" onclick="openSellModal()"><i class="fa-solid fa-plus"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-comment-dots"></i></div>
+        <div class="nav-item" onclick="logout()"><i class="fa-solid fa-user"></i></div>
+    </div>
+</div>
+
+<!-- Modal إضافة منتج جديد (بيع) -->
+<div class="modal" id="sellModal">
+    <div class="modal-body">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="font-weight: 800;">عرض غرض للبيع</h3>
+            <i class="fa-solid fa-xmark" style="font-size: 1.3rem; cursor: pointer;" onclick="closeSellModal()"></i>
+        </div>
+
+        <form id="productForm" onsubmit="saveProduct(event)">
+            <div class="input-group">
+                <input type="text" id="pTitle" placeholder="عنوان المنتج (مثال: حذاء نايك مقاس 42)" required style="padding-right: 15px;">
             </div>
             
-            <div class="form-group">
-                <label>السعر (بالدينار العراقي)</label>
-                <div class="price-input-wrapper">
-                    <input type="number" id="pPrice" placeholder="25000" required style="padding-left: 65px;">
-                    <span class="price-currency">د.ع</span>
-                </div>
+            <div class="input-group">
+                <input type="number" id="pPrice" placeholder="السعر (بالدينار العراقي د.ع)" required style="padding-right: 15px;">
             </div>
 
-            <div class="form-group">
-                <label>المنطقة / القرية في شنكال</label>
-                <input type="text" id="pLocation" placeholder="اكتب اسم منطقتك (مثال: سنوني، خانصور...)" required>
+            <div class="input-group">
+                <input type="text" id="pLocation" placeholder="اكتب منطقتك (مثال: سنوني، بورك، مركز شنكال)" required style="padding-right: 15px;">
             </div>
 
-            <div class="form-group">
-                <label>رقم الواتساب للتواصل</label>
-                <input type="tel" id="pPhone" placeholder="07700000000" required>
+            <div class="input-group">
+                <input type="tel" id="pPhone" placeholder="رقم الواتساب (مثال: 07700000000)" required style="padding-right: 15px;">
             </div>
 
-            <div class="form-group">
-                <label>صورة المنتج</label>
-                <input type="file" id="pImg" accept="image/*" required>
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 0.85rem; font-weight: bold; color: var(--text-gray);">اختر صور المنتج (حتى 10 صور كحد أقصى):</label>
+                <input type="file" id="pImages" accept="image/*" multiple onchange="previewImages(event)" required style="margin-top: 5px; width: 100%;">
+                <div class="image-preview-grid" id="previewGrid"></div>
             </div>
 
-            <button type="submit" class="submit-btn" id="submitBtn">نشر الإعلان الآن</button>
+            <button type="submit" class="btn-black" style="background: var(--primary);">نشر الغرض الآن</button>
         </form>
     </div>
 </div>
 
-<!-- Firebase SDK -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
     // إعدادات Firebase
-    const firebaseConfig = {
-        databaseURL: "https://ezidi-f97ea-default-rtdb.firebaseio.com"
-    };
+    const firebaseConfig = { databaseURL: "https://ezidi-f97ea-default-rtdb.firebaseio.com" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database().ref('shingal_products');
 
-    // التحكم بالنافذة المنبثقة
-    function openModal() { document.getElementById('addModal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('addModal').style.display = 'none'; }
+    let selectedImagesBase64 = [];
 
-    // تحويل الصورة إلى Base64
-    function convertImgToBase64(file) {
-        return new Promise((resolve, reject) => {
+    // التحقق من تسجيل الدخول
+    if(localStorage.getItem('isLoggedIn') === 'true') {
+        showScreen('mainScreen');
+    }
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function toggleAuthMode() {
+        const title = document.getElementById('authTitle');
+        title.innerText = title.innerText === 'Sign in' ? 'Create Account' : 'Sign in';
+    }
+
+    function handleAuth(e) {
+        e.preventDefault();
+        localStorage.setItem('isLoggedIn', 'true');
+        showScreen('mainScreen');
+    }
+
+    function bypassAuth() {
+        localStorage.setItem('isLoggedIn', 'true');
+        showScreen('mainScreen');
+    }
+
+    function logout() {
+        localStorage.removeItem('isLoggedIn');
+        showScreen('authScreen');
+    }
+
+    // Modal Control
+    function openSellModal() { document.getElementById('sellModal').classList.add('active'); }
+    function closeSellModal() { document.getElementById('sellModal').classList.remove('active'); }
+
+    // معاينة الصور والحد الأقصى 10 صور
+    function previewImages(e) {
+        const files = Array.from(e.target.files);
+        const grid = document.getElementById('previewGrid');
+        grid.innerHTML = '';
+        selectedImagesBase64 = [];
+
+        if(files.length > 10) {
+            alert('يمكنك اختيار 10 صور كحد أقصى فقط!');
+            e.target.value = '';
+            return;
+        }
+
+        files.forEach(file => {
             const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
+            reader.onload = (event) => {
+                selectedImagesBase64.push(event.target.result);
+                const img = document.createElement('img');
+                img.src = event.target.result;
+                img.className = 'img-preview-box';
+                grid.appendChild(img);
+            };
             reader.readAsDataURL(file);
         });
     }
 
-    // إضافة منتج جديد
-    document.getElementById('productForm').addEventListener('submit', async (e) => {
+    // حفظ المنتج في Firebase
+    async function saveProduct(e) {
         e.preventDefault();
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = "جاري النشر...";
+        if(selectedImagesBase64.length === 0) { alert('الرجاء اختيار صورة واحدة على الأقل'); return; }
 
-        try {
-            const title = document.getElementById('pTitle').value;
-            const price = document.getElementById('pPrice').value;
-            const location = document.getElementById('pLocation').value;
-            let phone = document.getElementById('pPhone').value.trim();
-            const imgFile = document.getElementById('pImg').files[0];
+        let phone = document.getElementById('pPhone').value.trim();
+        if(phone.startsWith('0')) { phone = '964' + phone.substring(1); }
 
-            if(phone.startsWith('0')) { phone = '964' + phone.substring(1); }
+        const productData = {
+            title: document.getElementById('pTitle').value,
+            price: Number(document.getElementById('pPrice').value).toLocaleString('ar-IQ'),
+            location: document.getElementById('pLocation').value,
+            phone: phone,
+            images: selectedImagesBase64,
+            createdAt: Date.now()
+        };
 
-            const base64Img = await convertImgToBase64(imgFile);
-
-            await db.push({
-                title: title,
-                price: Number(price).toLocaleString('ar-IQ'),
-                location: location,
-                phone: phone,
-                image: base64Img,
-                createdAt: Date.now()
-            });
-
-            closeModal();
-            document.getElementById('productForm').reset();
-            alert("تم نشر غرضك بنجاح!");
-        } catch (err) {
-            alert("حدث خطأ أثناء النشر، حاول مجدداً.");
-            console.error(err);
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerText = "نشر الإعلان الآن";
-        }
-    });
+        await db.push(productData);
+        closeSellModal();
+        document.getElementById('productForm').reset();
+        document.getElementById('previewGrid').innerHTML = '';
+        alert('تم نشر منتجك بنجاح!');
+    }
 
     // جلب المنتجات وعرضها
     db.on('value', (snapshot) => {
         const feed = document.getElementById('productsFeed');
         feed.innerHTML = '';
         const data = snapshot.val();
+        if(!data) return;
 
-        if (!data) {
-            feed.innerHTML = '<div class="loading-text">لا توجد أغراض معروضة حالياً. كُن أول من يعرض!</div>';
-            return;
-        }
+        Object.values(data).reverse().forEach(prod => {
+            const firstImg = prod.images ? prod.images[0] : 'https://via.placeholder.com/150';
+            const imgCount = prod.images ? prod.images.length : 1;
+            const waMsg = encodeURIComponent(`مرحباً، أنا مهتم بشراء "${prod.title}" المعروض بسعر ${prod.price} د.ع.`);
+            const waUrl = `https://wa.me/${prod.phone}?text=${waMsg}`;
 
-        const items = Object.values(data).reverse();
-
-        items.forEach(item => {
-            const waMsg = encodeURIComponent(`مرحباً، أنا مهتم بشراء "${item.title}" المعروض على سوق شنكال بسعر ${item.price} د.ع.`);
-            const waUrl = `https://wa.me/${item.phone}?text=${waMsg}`;
-
-            const cardHtml = `
-                <div class="card">
-                    <div class="card-img-wrapper">
-                        <img src="${item.image}" class="card-img" alt="${item.title}">
+            feed.innerHTML += `
+                <div class="product-card" onclick="window.open('${waUrl}', '_blank')">
+                    <button class="fav-btn"><i class="fa-regular fa-heart"></i></button>
+                    <div class="product-img-box">
+                        <img src="${firstImg}" alt="${prod.title}">
+                        ${imgCount > 1 ? `<span class="img-count-badge"><i class="fa-solid fa-images"></i> ${imgCount}</span>` : ''}
                     </div>
-                    <div class="card-body">
-                        <div>
-                            <div class="card-title">${item.title}</div>
-                            <div class="card-location">📍 ${item.location}</div>
-                        </div>
-                        <div>
-                            <div class="card-price">${item.price} <span style="font-size:0.75rem;">د.ع</span></div>
-                            <a href="${waUrl}" target="_blank" class="wa-link">تواصل 💬</a>
-                        </div>
-                    </div>
+                    <div class="product-title">${prod.title}</div>
+                    <div class="product-price">${prod.price} <span style="font-size:0.7rem;">د.ع</span></div>
+                    <div class="product-location"><i class="fa-solid fa-location-dot"></i> ${prod.location}</div>
                 </div>
             `;
-            feed.innerHTML += cardHtml;
         });
     });
 </script>
-
 </body>
 </html>
